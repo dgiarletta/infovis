@@ -4,14 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
   <title>TRABAJO PRACTICO VISUALIZACION DE INFORMACION</title>
-  <sub-title>Alumno : Diego H. Giarletta </sub-title>
-  <sub-title-1>Objetivo : Identificar los Consumos de tarjeta de credito en compras realizadas fuera de la fecha de descuentos</sub-title-1>
   <style>
     body {
       font-family: Arial, sans-serif;
       max-width: 1100px;
       margin: 0 auto;
       padding: 20px;
+    }
+    .caratula {
+      padding: 40px 24px;
+      border: 1px solid #cfe6f3;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #dceffa, #f3fbff);
+      color: #1f3a5f;
+      text-align: center;
+    }
+    .caratula-icono {
+      font-size: 40px;
+    }
+    .caratula h1 {
+      margin: 12px 0;
+      font-size: clamp(30px, 5vw, 48px);
+    }
+    .caratula p {
+      max-width: 660px;
+      margin: 10px auto 0;
+      line-height: 1.5;
+      color: #4a6585;
     }
     .resumen {
       display: flex;
@@ -46,6 +65,13 @@
   </style>
 </head>
 <body>
+  <header class="caratula">
+    <div class="caratula-icono" aria-hidden="true">💳</div>
+    <h1>Mis consumos de tarjeta</h1>
+    <p>Trabajo práctico de visualización de información</p>
+    <p>Objetivo: identificar los consumos de tarjeta de crédito en compras realizadas fuera de las fechas de descuento.</p>
+    <p>Alumno: Diego H. Giarletta</p>
+  </header>
   <section class="resumen" aria-label="Resumen de transacciones">
     <div class="resumen-item">
       <span class="resumen-valor" id="transacciones">Cargando...</span>
