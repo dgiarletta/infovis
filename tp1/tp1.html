@@ -98,6 +98,10 @@
       <span class="resumen-valor" id="usuarios">Cargando...</span>
       <span class="resumen-etiqueta">Usuarios de la tarjeta</span>
     </div>
+    <div class="resumen-item">
+      <span class="resumen-valor">-1,42 %</span>
+      <span class="resumen-etiqueta">Bonificaciones y devoluciones sobre el gasto neto total (Power BI, nov. 2025 a oct. 2026)</span>
+    </div>
   </section>
   <p id="error-resumen" role="alert" hidden></p>
   <noscript>Activá JavaScript para ver el resumen de transacciones.</noscript>
@@ -127,7 +131,7 @@
         document.getElementById('usuarios').textContent = usuarios;
       } catch (error) {
         console.error('Error al cargar el resumen:', error);
-        document.querySelectorAll('.resumen-valor').forEach(elemento => { elemento.textContent = 'No disponible'; });
+        document.querySelectorAll('.resumen-valor[id]').forEach(elemento => { elemento.textContent = 'No disponible'; });
         const aviso = document.getElementById('error-resumen');
         aviso.textContent = 'No se pudo cargar el resumen. Revisá el archivo resumen-transacciones.csv.';
         aviso.hidden = false;
