@@ -48,18 +48,53 @@
 <body>
   <section class="resumen" aria-label="Resumen de transacciones">
     <div class="resumen-item">
-      <span class="resumen-valor">Por completar</span>
+      <span class="resumen-valor" id="transacciones">Cargando...</span>
       <span class="resumen-etiqueta">Transacciones totales</span>
     </div>
     <div class="resumen-item">
-      <span class="resumen-valor">Por completar</span>
+      <span class="resumen-valor" id="categorias">Cargando...</span>
       <span class="resumen-etiqueta">Total de categorías</span>
     </div>
     <div class="resumen-item">
-      <span class="resumen-valor">Por completar</span>
+      <span class="resumen-valor" id="mayor-categoria">Cargando...</span>
       <span class="resumen-etiqueta">Categorías con más transacciones</span>
     </div>
   </section>
+  <p id="error-resumen" role="alert" hidden></p>
+  <noscript>Activá JavaScript para ver el resumen de transacciones.</noscript>
+  <p class="nota-grafico">Resumen cargado desde el CSV. Incluye bonificaciones y devoluciones; los nombres de categorías equivalentes se agrupan.</p>
+  <script>
+    async function cargarResumen() {
+      try {
+        const respuesta = await fetch('resumen-transacciones.csv', { cache: 'no-cache' });
+        if (!respuesta.ok) throw new Error('HTTP ' + respuesta.status);
+        const lineas = (await respuesta.text()).replace(/^\uFEFF/, '').trim().split(/\r?\n/);
+        if (lineas.shift() !== 'Indicador;Valor') throw new Error('Encabezado CSV inválido');
+        const datos = new Map();
+        for (const linea of lineas) {
+          const campos = linea.match(/^([^;"]+);(?:"((?:[^"]|"")*)"|([^;"]*))$/);
+          if (!campos || datos.has(campos[1])) throw new Error('Fila CSV inválida');
+          datos.set(campos[1], (campos[2] !== undefined ? campos[2].replace(/""/g, '"') : campos[3]).trim());
+        }
+        const transacciones = datos.get('Transacciones totales');
+        const categorias = datos.get('Total de categorías');
+        const mayor = datos.get('Categoría con más transacciones');
+        if (!/^\d+$/.test(transacciones || '') || !/^\d+$/.test(categorias || '') || !mayor) {
+          throw new Error('Faltan indicadores válidos en el CSV');
+        }
+        document.getElementById('transacciones').textContent = transacciones;
+        document.getElementById('categorias').textContent = categorias;
+        document.getElementById('mayor-categoria').textContent = mayor;
+      } catch (error) {
+        console.error('Error al cargar el resumen:', error);
+        document.querySelectorAll('.resumen-valor').forEach(elemento => { elemento.textContent = 'No disponible'; });
+        const aviso = document.getElementById('error-resumen');
+        aviso.textContent = 'No se pudo cargar el resumen. Revisá el archivo resumen-transacciones.csv.';
+        aviso.hidden = false;
+      }
+    }
+    cargarResumen();
+  </script>
   <h1>Como Es posible Identificar los consumos Mensaules periodicos?</h1>
   <img src="RawGraphs-TreeMap.svg" alt="Treemap de consumos mensuales" style="width: 100%; height: auto; margin: 0 auto; display: block;">
   <p class="nota-grafico">Nota: Treemap generado en RAWGraphs para analizar los consumos mensuales periódicos.</p>
