@@ -72,6 +72,12 @@
       aspect-ratio: 16 / 10;
       border: 0;
     }
+    .marco-pregunta {
+      border: 1px solid #cfe6f3;
+      border-radius: 20px;
+      padding: 24px;
+      margin: 32px 0;
+    }
   </style>
 </head>
 <body>
@@ -81,6 +87,7 @@
     <p>Trabajo práctico de visualización de información</p>
     <p>Alumno: Diego H. Giarletta</p>
   </header>
+
   <section class="resumen" aria-label="Resumen de transacciones">
     <div class="resumen-item">
       <span class="resumen-valor" id="transacciones">Cargando...</span>
@@ -103,8 +110,10 @@
       <span class="resumen-etiqueta">Bonificaciones y devoluciones</span>
     </div>
   </section>
+
   <p id="error-resumen" role="alert" hidden></p>
   <noscript>Activá JavaScript para ver el resumen de transacciones.</noscript>
+
   <script>
     async function cargarResumen() {
       try {
@@ -113,18 +122,22 @@
         const lineas = (await respuesta.text()).replace(/^\uFEFF/, '').trim().split(/\r?\n/);
         if (lineas.shift() !== 'Indicador;Valor') throw new Error('Encabezado CSV inválido');
         const datos = new Map();
+
         for (const linea of lineas) {
           const campos = linea.match(/^([^;"]+);(?:"((?:[^"]|"")*)"|([^;"]*))$/);
           if (!campos || datos.has(campos[1])) throw new Error('Fila CSV inválida');
           datos.set(campos[1], (campos[2] !== undefined ? campos[2].replace(/""/g, '"') : campos[3]).trim());
         }
+
         const transacciones = datos.get('Transacciones totales');
         const categorias = datos.get('Total de categorías');
         const mayor = datos.get('Categoría con más transacciones');
         const usuarios = datos.get('Usuarios de la tarjeta');
+
         if (!/^\d+$/.test(transacciones || '') || !/^\d+$/.test(categorias || '') || !mayor || !/^\d+$/.test(usuarios || '')) {
           throw new Error('Faltan indicadores válidos en el CSV');
         }
+
         document.getElementById('transacciones').textContent = transacciones;
         document.getElementById('categorias').textContent = categorias;
         document.getElementById('mayor-categoria').textContent = mayor;
@@ -137,38 +150,47 @@
         aviso.hidden = false;
       }
     }
+
     cargarResumen();
   </script>
-  <h1>¿Cuál es la categoría con mayor consumo?</h1>
-  <img src="RawGraphs-TreeMap.svg" alt="Treemap de consumos mensuales" style="width: 100%; height: auto; margin: 0 auto; display: block;">
-  <p class="nota-grafico">Gráfico 1: Herramienta : RAWGraphs  Fuente: Resúmenes Visa - Nov 2025 a octubre 2026 - archivo: gastos_tarjeta_analsis_desglose.xlsx</p>
-  <p class="nota-grafico">Descripción: El gráfico compara el consumo total de las 29 categorías. Comida presenta el mayor gasto; entre las categorías con mayor consumo también se encuentran vacaciones, entretenimiento y ropa.</p>
-  <h1>¿Cómo se distribuye el gasto de cada categoría entre los usuarios y qué porcentaje corresponde a cada uno?</h1>
-  <p>Cada porcentaje representa la participación de un usuario dentro del total de esa categoría. Las bonificaciones y devoluciones se muestran como valores negativos.</p>
-  <iframe class="grafico-powerbi" title="Sumatoria de consumos por usuario de tarjetas" src="https://app.powerbi.com/view?r=eyJrIjoiYWRkZGFhNjgtODYzNC00MjhiLWFjODQtNjljZWIxZGMxZjJhIiwidCI6ImExZjUwYTk3LTIxYzAtNDlhNy1hOWQ0LWYyNDRlYmI0MmRhNyIsImMiOjR9" allowfullscreen></iframe>
-  <p class="nota-grafico">Gráfico 2: Herramienta: Power BI. Fuente: Resúmenes Visa, noviembre de 2025 a octubre de 2026.</p>
-  <p class="nota-grafico">Descripción: El gráfico de Power BI muestra el porcentaje de participación de cada usuario en cada categoría. Las bonificaciones se registran de forma conjunta para todas las categorías, según las promociones vigentes durante el año.</p>
-  <h1>¿Qué porcentaje del gasto neto total representa cada categoría?</h1>
-  <p>El porcentaje se calcula sobre el gasto neto total, incluidas las bonificaciones y devoluciones. Pasá el mouse sobre cada barra para ver el monto neto, expresado en miles.</p>
-  <iframe class="grafico-powerbi" title="Participación de cada categoría en el gasto neto total" src="https://app.powerbi.com/view?r=eyJrIjoiZjY3MTkxZGYtYjEwMi00ZmExLWJmMDgtZTBiYjA3MjJhYjE2IiwidCI6ImExZjUwYTk3LTIxYzAtNDlhNy1hOWQ0LWYyNDRlYmI0MmRhNyIsImMiOjR9" allowfullscreen></iframe>
-  <p class="nota-grafico">Gráfico 3: Herramienta: Power BI. Fuente: Resúmenes Visa, noviembre de 2025 a octubre de 2026.</p>
-  <p class="nota-grafico">Descripción: El gráfico muestra qué porcentaje del gasto neto anual corresponde a cada categoría. Las bonificaciones y devoluciones representan una reducción equivalente al 1,42 % del gasto neto total. Este resultado podría estar relacionado con la falta de una planificación sistemática de las compras para aprovechar los días de promoción.</p>
 
-  <section style="border: 1px solid #cfe6f3; border-radius: 20px; padding: 24px; margin: 32px 0;">
-  <h1>¿Cuánto se ahorró y cuánto más se podría haber ahorrado en comida y ropa aprovechando los días de promoción?</h1>
-
-  <!-- COMIDA -->
-  <div style="min-height: 494px; margin-bottom: 60px;" id="datawrapper-vis-vUZ9o">
-    <script defer src="https://datawrapper.dwcdn.net/vUZ9o/embed.js"
-      charset="utf-8" data-target="#datawrapper-vis-vUZ9o"></script>
-  </div>
-
-  <!-- ROPA -->
-  <div style="min-height: 494px;" id="datawrapper-vis-AQw7z">
-    <script defer src="https://datawrapper.dwcdn.net/AQw7z/embed.js"
-      charset="utf-8" data-target="#datawrapper-vis-AQw7z"></script>
-  </div>
+  <section class="marco-pregunta">
+    <h1>¿Cuál es la categoría con mayor consumo?</h1>
+    <img src="RawGraphs-TreeMap.svg" alt="Treemap de consumos mensuales" style="width: 100%; height: auto; margin: 0 auto; display: block;">
+    <p class="nota-grafico">Gráfico 1: Herramienta : RAWGraphs  Fuente: Resúmenes Visa - Nov 2025 a octubre 2026 - archivo: gastos_tarjeta_analsis_desglose.xlsx</p>
+    <p class="nota-grafico">Descripción: El gráfico compara el consumo total de las 29 categorías. Comida presenta el mayor gasto; entre las categorías con mayor consumo también se encuentran vacaciones, entretenimiento y ropa.</p>
   </section>
 
+  <section class="marco-pregunta">
+    <h1>¿Cómo se distribuye el gasto de cada categoría entre los usuarios y qué porcentaje corresponde a cada uno?</h1>
+    <p>Cada porcentaje representa la participación de un usuario dentro del total de esa categoría. Las bonificaciones y devoluciones se muestran como valores negativos.</p>
+    <iframe class="grafico-powerbi" title="Sumatoria de consumos por usuario de tarjetas" src="https://app.powerbi.com/view?r=eyJrIjoiYWRkZGFhNjgtODYzNC00MjhiLWFjODQtNjljZWIxZGMxZjJhIiwidCI6ImExZjUwYTk3LTIxYzAtNDlhNy1hOWQ0LWYyNDRlYmI0MmRhNyIsImMiOjR9" allowfullscreen></iframe>
+    <p class="nota-grafico">Gráfico 2: Herramienta: Power BI. Fuente: Resúmenes Visa, noviembre de 2025 a octubre de 2026.</p>
+    <p class="nota-grafico">Descripción: El gráfico de Power BI muestra el porcentaje de participación de cada usuario en cada categoría. Las bonificaciones se registran de forma conjunta para todas las categorías, según las promociones vigentes durante el año.</p>
+  </section>
+
+  <section class="marco-pregunta">
+    <h1>¿Qué porcentaje del gasto neto total representa cada categoría?</h1>
+    <p>El porcentaje se calcula sobre el gasto neto total, incluidas las bonificaciones y devoluciones. Pasá el mouse sobre cada barra para ver el monto neto, expresado en miles.</p>
+    <iframe class="grafico-powerbi" title="Participación de cada categoría en el gasto neto total" src="https://app.powerbi.com/view?r=eyJrIjoiZjY3MTkxZGYtYjEwMi00ZmExLWJmMDgtZTBiYjA3MjJhYjE2IiwidCI6ImExZjUwYTk3LTIxYzAtNDlhNy1hOWQ0LWYyNDRlYmI0MmRhNyIsImMiOjR9" allowfullscreen></iframe>
+    <p class="nota-grafico">Gráfico 3: Herramienta: Power BI. Fuente: Resúmenes Visa, noviembre de 2025 a octubre de 2026.</p>
+    <p class="nota-grafico">Descripción: El gráfico muestra qué porcentaje del gasto neto anual corresponde a cada categoría. Las bonificaciones y devoluciones representan una reducción equivalente al 1,42 % del gasto neto total. Este resultado podría estar relacionado con la falta de una planificación sistemática de las compras para aprovechar los días de promoción.</p>
+  </section>
+
+  <section class="marco-pregunta">
+    <h1>¿Cuánto se ahorró y cuánto más se podría haber ahorrado en comida y ropa aprovechando los días de promoción?</h1>
+
+    <!-- COMIDA -->
+    <div style="min-height: 494px; margin-bottom: 60px;" id="datawrapper-vis-vUZ9o">
+      <script defer src="https://datawrapper.dwcdn.net/vUZ9o/embed.js"
+        charset="utf-8" data-target="#datawrapper-vis-vUZ9o"></script>
+    </div>
+
+    <!-- ROPA -->
+    <div style="min-height: 494px;" id="datawrapper-vis-AQw7z">
+      <script defer src="https://datawrapper.dwcdn.net/AQw7z/embed.js"
+        charset="utf-8" data-target="#datawrapper-vis-AQw7z"></script>
+    </div>
+  </section>
 </body>
 </html>
