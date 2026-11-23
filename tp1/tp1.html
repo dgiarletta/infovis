@@ -59,6 +59,10 @@
       <span class="resumen-valor" id="mayor-categoria">Cargando...</span>
       <span class="resumen-etiqueta">Categorías con más transacciones</span>
     </div>
+    <div class="resumen-item">
+      <span class="resumen-valor" id="usuarios">Cargando...</span>
+      <span class="resumen-etiqueta">Usuarios de la tarjeta</span>
+    </div>
   </section>
   <p id="error-resumen" role="alert" hidden></p>
   <noscript>Activá JavaScript para ver el resumen de transacciones.</noscript>
@@ -79,12 +83,14 @@
         const transacciones = datos.get('Transacciones totales');
         const categorias = datos.get('Total de categorías');
         const mayor = datos.get('Categoría con más transacciones');
-        if (!/^\d+$/.test(transacciones || '') || !/^\d+$/.test(categorias || '') || !mayor) {
+        const usuarios = datos.get('Usuarios de la tarjeta');
+        if (!/^\d+$/.test(transacciones || '') || !/^\d+$/.test(categorias || '') || !mayor || !/^\d+$/.test(usuarios || '')) {
           throw new Error('Faltan indicadores válidos en el CSV');
         }
         document.getElementById('transacciones').textContent = transacciones;
         document.getElementById('categorias').textContent = categorias;
         document.getElementById('mayor-categoria').textContent = mayor;
+        document.getElementById('usuarios').textContent = usuarios;
       } catch (error) {
         console.error('Error al cargar el resumen:', error);
         document.querySelectorAll('.resumen-valor').forEach(elemento => { elemento.textContent = 'No disponible'; });
