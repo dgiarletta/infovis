@@ -13,6 +13,30 @@
       margin: 0 auto;
       padding: 20px;
     }
+    .resumen {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      border: 1px solid #cfe6f3;
+      border-radius: 20px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .resumen-item {
+      flex: 1 1 220px;
+      padding: 18px 22px;
+    }
+    .resumen-valor {
+      display: block;
+      color: #1f3a5f;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .resumen-etiqueta {
+      color: #4a6585;
+      font-size: 14px;
+    }
     .nota-grafico {
       font-size: 0.95rem;
       color: #444;
@@ -22,6 +46,20 @@
   </style>
 </head>
 <body>
+  <section class="resumen" aria-label="Resumen de transacciones">
+    <div class="resumen-item">
+      <span class="resumen-valor">Por completar</span>
+      <span class="resumen-etiqueta">Transacciones totales</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-valor">Por completar</span>
+      <span class="resumen-etiqueta">Total de categorías</span>
+    </div>
+    <div class="resumen-item">
+      <span class="resumen-valor">Por completar</span>
+      <span class="resumen-etiqueta">Categorías con más transacciones</span>
+    </div>
+  </section>
   <h1>Como Es posible Identificar los consumos Mensaules periodicos?</h1>
   <img src="RawGraphs-TreeMap.svg" alt="Treemap de consumos mensuales" style="width: 100%; height: auto; margin: 0 auto; display: block;">
   <p class="nota-grafico">Nota: Treemap generado en RAWGraphs para analizar los consumos mensuales periódicos.</p>
